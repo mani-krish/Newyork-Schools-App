@@ -1,8 +1,5 @@
 package com.assessment.android.domain.model
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
 data class SchoolDetail(
     val numOfSatTestTakers: String,
     val satReadingAvgScore: String,

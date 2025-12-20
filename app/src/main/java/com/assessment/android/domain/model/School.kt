@@ -1,8 +1,5 @@
 package com.assessment.android.domain.model
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
 data class School(
     val dbn: String,
     val schoolName: String,
