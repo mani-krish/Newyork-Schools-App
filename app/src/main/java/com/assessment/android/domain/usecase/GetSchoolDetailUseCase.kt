@@ -3,26 +3,26 @@ package com.assessment.android.domain.usecase
 import com.assessment.android.domain.model.SchoolDetail
 import com.assessment.android.domain.repository.SchoolsRepository
 import com.assessment.android.domain.toDomain
-import com.assessment.core.network.utils.ResponseWrapper
+import com.assessment.core.network.utils.NetworkResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetSchoolDetailUseCase @Inject constructor(private val schoolsRepository: SchoolsRepository) {
-    suspend operator fun invoke(dbn: String): Flow<ResponseWrapper<SchoolDetail>> {
+    suspend operator fun invoke(dbn: String): Flow<NetworkResult<SchoolDetail>> {
         return schoolsRepository.getSchoolDetail(dbn)
             .map { response ->
                 when (response) {
-                    is ResponseWrapper.Success -> {
+                    is NetworkResult.Success -> {
                         val model = response.data.firstOrNull()
                         if (model != null) {
-                            ResponseWrapper.Success(model.toDomain())
+                            NetworkResult.Success(model.toDomain())
                         } else {
-                            ResponseWrapper.GenericError
+                            NetworkResult.GenericError
                         }
                     }
-                    is ResponseWrapper.HttpError -> response
-                    is ResponseWrapper.GenericError -> response
+                    is NetworkResult.HttpError -> response
+                    is NetworkResult.GenericError -> response
                 }
             }
     }

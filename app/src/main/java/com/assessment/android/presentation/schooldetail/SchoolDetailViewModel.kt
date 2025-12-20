@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.assessment.android.domain.usecase.GetSchoolDetailUseCase
-import com.assessment.core.network.utils.ResponseWrapper
+import com.assessment.core.network.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,7 +46,7 @@ class SchoolDetailViewModel @Inject constructor(
             getSchoolDetailUseCase(schoolDbn)
                 .collectLatest { result ->
                     when (result) {
-                        is ResponseWrapper.Success -> {
+                        is NetworkResult.Success -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -56,7 +56,7 @@ class SchoolDetailViewModel @Inject constructor(
                             }
                         }
 
-                        is ResponseWrapper.HttpError -> {
+                        is NetworkResult.HttpError -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -65,7 +65,7 @@ class SchoolDetailViewModel @Inject constructor(
                             }
                         }
 
-                        is ResponseWrapper.GenericError -> {
+                        is NetworkResult.GenericError -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,

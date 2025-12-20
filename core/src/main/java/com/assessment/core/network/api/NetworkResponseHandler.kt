@@ -1,23 +1,23 @@
 package com.assessment.core.network.api
 
-import com.assessment.core.network.utils.ResponseWrapper
+import com.assessment.core.network.utils.NetworkResult
 import retrofit2.Response
 import java.io.IOException
 
 /**
- * Executes Rest API calls and maps results to ResponseWrapper.
+ * Executes Rest API calls and maps results to NetworkResult.
  * Ensures consistent success, HTTP error, and network failure handling
  */
-object RestApiCall {
+object NetworkResponseHandler {
 
-    suspend fun <T : Any> safeApiCall(apiCall: suspend () -> Response<T>): ResponseWrapper<T> {
+    suspend fun <T : Any> execute(apiCall: suspend () -> Response<T>): NetworkResult<T> {
         return try {
             val response = apiCall.invoke()
 
             if (response.isSuccessful) {
                 response.body()?.let {
-                    ResponseWrapper.Success(data = it)
-                } ?: ResponseWrapper.GenericError
+                    NetworkResult.Success(data = it)
+                } ?: NetworkResult.GenericError
             } else {
                 // HTTP error response 4xx / 5xx
                 val errorBody = try {
@@ -25,7 +25,7 @@ object RestApiCall {
                 } catch (exception: Exception) {
                     null
                 }
-                ResponseWrapper.HttpError(
+                NetworkResult.HttpError(
                     code = response.code(),
                     httpErrorMessage = response.message().takeIf { it.isNotBlank() }
                         ?: "HTTP error ${response.code()}",
@@ -33,10 +33,10 @@ object RestApiCall {
             }
         } catch (exception: IOException) {
             // Network failure timeout, no internet
-            ResponseWrapper.GenericError
+            NetworkResult.GenericError
         } catch (exception: Exception) {
             // Any other unexpected errors
-            ResponseWrapper.GenericError
+            NetworkResult.GenericError
         }
     }
 }

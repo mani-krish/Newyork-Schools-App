@@ -3,7 +3,7 @@ package com.assessment.android.presentation.schoollist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.assessment.android.domain.usecase.GetSchoolsUseCase
-import com.assessment.core.network.utils.ResponseWrapper
+import com.assessment.core.network.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,7 +42,7 @@ class SchoolListViewModel @Inject constructor(
             getSchoolsUseCase()
                 .collect { result ->
                     when (result) {
-                        is ResponseWrapper.Success -> {
+                        is NetworkResult.Success -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -52,7 +52,7 @@ class SchoolListViewModel @Inject constructor(
                             }
                         }
 
-                        is ResponseWrapper.HttpError -> {
+                        is NetworkResult.HttpError -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -61,7 +61,7 @@ class SchoolListViewModel @Inject constructor(
                             }
                         }
 
-                        is ResponseWrapper.GenericError -> {
+                        is NetworkResult.GenericError -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,

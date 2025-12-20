@@ -4,7 +4,7 @@ import com.assessment.android.data.model.SchoolDto
 import com.assessment.android.domain.model.School
 import com.assessment.android.domain.repository.SchoolsRepository
 import com.assessment.android.domain.usecase.GetSchoolsUseCase
-import com.assessment.core.network.utils.ResponseWrapper
+import com.assessment.core.network.utils.NetworkResult
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -41,7 +41,7 @@ class GetSchoolsUseCaseTest {
         )
 
         // Mock the repository to return a Success wrapper with the DTO list
-        coEvery { repository.getSchools() } returns flowOf(ResponseWrapper.Success(schoolDtoList))
+        coEvery { repository.getSchools() } returns flowOf(NetworkResult.Success(schoolDtoList))
 
         // Expected domain model list after mapping
         val schools = listOf(
@@ -59,8 +59,8 @@ class GetSchoolsUseCaseTest {
         val result = useCase.invoke().first()
 
         // Then
-        assertTrue(result is ResponseWrapper.Success)
-        val success = result as ResponseWrapper.Success
+        assertTrue(result is NetworkResult.Success)
+        val success = result as NetworkResult.Success
         assertEquals(
             schools, success.data
         )
@@ -70,7 +70,7 @@ class GetSchoolsUseCaseTest {
     fun `invoke should return Http Error response`() = runTest {
         // Given
         val httpError =
-            ResponseWrapper.HttpError(code = 404, httpErrorMessage = "Not Found", errorBody = null)
+            NetworkResult.HttpError(code = 404, httpErrorMessage = "Not Found", errorBody = null)
 
         // Mock the repository to return the HttpError
         coEvery { repository.getSchools() } returns flowOf(httpError)
@@ -79,14 +79,14 @@ class GetSchoolsUseCaseTest {
         val result = useCase.invoke().first()
 
         // Then
-        assertTrue(result is ResponseWrapper.HttpError)
+        assertTrue(result is NetworkResult.HttpError)
         assertEquals(httpError, result)
     }
 
     @Test
     fun `invoke returns Success with empty list when repository returns empty`() = runTest {
         // Mock the repository to return a Success wrapper with an empty list
-        coEvery { repository.getSchools() } returns flowOf(ResponseWrapper.Success(emptyList()))
+        coEvery { repository.getSchools() } returns flowOf(NetworkResult.Success(emptyList()))
 
         // Define the expected empty list of domain models
         val expectedSchools = emptyList<School>()
@@ -95,9 +95,9 @@ class GetSchoolsUseCaseTest {
         val result = useCase.invoke().first()
 
         // Then
-        assertTrue(result is ResponseWrapper.Success)
+        assertTrue(result is NetworkResult.Success)
 
-        val success = result as ResponseWrapper.Success
+        val success = result as NetworkResult.Success
         assertEquals(expectedSchools, success.data)
     }
 }
