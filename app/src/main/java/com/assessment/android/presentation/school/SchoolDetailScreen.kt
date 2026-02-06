@@ -1,4 +1,4 @@
-package com.assessment.android.presentation.schooldetail
+package com.assessment.android.presentation.school
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,8 +42,9 @@ import com.assessment.android.presentation.component.LoadingState
  */
 @Composable
 fun SchoolDetailScreen(
+    modifier: Modifier = Modifier,
     viewModel: SchoolDetailViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    onBackClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -52,24 +53,27 @@ fun SchoolDetailScreen(
             AppToolbar(
                 title = stringResource(R.string.school_detail_screen_title),
                 showBack = true,
-                onBackClick = onNavigateBack
+                onBackClick = onBackClick,
+                modifier = modifier
             )
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            when {
-                uiState.isLoading -> LoadingState()
-                uiState.errorMessage != null -> ErrorState(stringResource(R.string.error_message))
-                uiState.schoolDetail != null -> {
-                    uiState.schoolDetail?.let {
-                        SchoolDetailContent(school = it)
+        },
+        content = { innerPadding ->
+            Box(modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()) {
+                when {
+                    uiState.isLoading -> LoadingState()
+                    uiState.errorMessage != null -> ErrorState(stringResource(R.string.error_message))
+                    uiState.schoolDetail != null -> {
+                        uiState.schoolDetail?.let {
+                            SchoolDetailContent(school = it)
+                        }
                     }
+                    else -> EmptyState(stringResource(R.string.empty_state_message))
                 }
-
-                else -> EmptyState(stringResource(R.string.empty_state_message))
             }
         }
-    }
+    )
 }
 
 /**

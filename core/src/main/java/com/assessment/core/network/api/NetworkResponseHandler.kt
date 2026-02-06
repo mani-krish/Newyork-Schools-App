@@ -20,16 +20,14 @@ object NetworkResponseHandler {
                 } ?: NetworkResult.GenericError
             } else {
                 // HTTP error response 4xx / 5xx
-                val errorBody = try {
+                try {
                     response.errorBody()?.string()
                 } catch (exception: Exception) {
                     null
                 }
                 NetworkResult.HttpError(
-                    code = response.code(),
-                    httpErrorMessage = response.message().takeIf { it.isNotBlank() }
-                        ?: "HTTP error ${response.code()}",
-                    errorBody = errorBody)
+                    message = response.message().takeIf { it.isNotBlank() }
+                        ?: "HTTP error ${response.code()}")
             }
         } catch (exception: IOException) {
             // Network failure timeout, no internet

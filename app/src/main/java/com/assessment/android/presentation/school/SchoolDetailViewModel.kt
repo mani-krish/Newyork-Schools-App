@@ -1,9 +1,9 @@
-package com.assessment.android.presentation.schooldetail
+package com.assessment.android.presentation.school
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.assessment.android.domain.usecase.GetSchoolDetailUseCase
+import com.assessment.android.domain.usecase.GetSchoolUseCase
 import com.assessment.core.network.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SchoolDetailViewModel @Inject constructor(
-    private val getSchoolDetailUseCase: GetSchoolDetailUseCase,
+    private val getSchoolUseCase: GetSchoolUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -43,7 +43,7 @@ class SchoolDetailViewModel @Inject constructor(
     private fun loadSchoolDetail() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            getSchoolDetailUseCase(schoolDbn)
+            getSchoolUseCase(schoolDbn)
                 .collectLatest { result ->
                     when (result) {
                         is NetworkResult.Success -> {
@@ -60,7 +60,7 @@ class SchoolDetailViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
-                                    errorMessage = result.httpErrorMessage
+                                    errorMessage = result.message
                                 )
                             }
                         }

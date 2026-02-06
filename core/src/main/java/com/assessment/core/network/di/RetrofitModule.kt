@@ -1,6 +1,6 @@
 package com.assessment.core.network.di
 
-import com.assessment.core.network.config.NetworkConfig
+import com.assessment.core.network.utils.NetworkConfig
 import com.assessment.core.network.interceptor.LoggingInterceptor
 import dagger.Module
 import dagger.Provides

@@ -10,5 +10,5 @@ import kotlinx.coroutines.flow.Flow
  */
 interface SchoolsRepository {
     suspend fun getSchools(): Flow<NetworkResult<List<SchoolDto>>>
-    suspend fun getSchoolDetail(dbn: String): Flow<NetworkResult<List<SchoolDetailDto>>>
+    suspend fun getSchool(dbn: String): Flow<NetworkResult<List<SchoolDetailDto>>>
 }

@@ -1,5 +1,7 @@
 package com.assessment.android.presentation.component
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 /**
  * Reusable top app bar with back navigation support
@@ -17,11 +21,17 @@ import androidx.compose.runtime.Composable
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppToolbar(
+    modifier: Modifier,
     title: String,
     showBack: Boolean = false,
     onBackClick: (() -> Unit)? = null
 ) {
     TopAppBar(
+        modifier = modifier.fillMaxWidth(),
+        windowInsets = WindowInsets(
+            top = 0.dp,
+            bottom = 0.dp,
+        ),
         title = { Text(text = title) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,

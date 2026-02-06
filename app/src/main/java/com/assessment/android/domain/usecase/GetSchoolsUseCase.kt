@@ -21,7 +21,6 @@ class GetSchoolsUseCase @Inject constructor(private val schoolsRepository: Schoo
                             .toList()
                         NetworkResult.Success(schools)
                     }
-
                     is NetworkResult.HttpError -> response
                     is NetworkResult.GenericError -> response
                 }

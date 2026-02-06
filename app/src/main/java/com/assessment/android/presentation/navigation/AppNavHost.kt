@@ -2,29 +2,30 @@ package com.assessment.android.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.assessment.android.presentation.schooldetail.SchoolDetailScreen
-import com.assessment.android.presentation.schoollist.SchoolListScreen
+import com.assessment.android.presentation.home.SchoolListScreen
+import com.assessment.android.presentation.school.SchoolDetailScreen
 
 /**
  * Defines the app’s navigation graph and screen destinations
  */
 @Composable
-fun AppNavGraph(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
-    startDestination: SchoolListRoute = SchoolListRoute
+fun AppNavHost(
+    modifier: Modifier
 ) {
+    val navController = rememberNavController()
     NavHost(
+        modifier = modifier,
         navController = navController,
-        startDestination = startDestination,
-        modifier = modifier
+        startDestination = SchoolListRoute
+
     ) {
         composable<SchoolListRoute> {
             SchoolListScreen(
+                homeViewModel = hiltViewModel(),
                 onSchoolClick = { dbn ->
                     navController.navigate(SchoolDetailRoute(dbn))
                 }
@@ -33,7 +34,7 @@ fun AppNavGraph(
 
         composable<SchoolDetailRoute> {
             SchoolDetailScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() }
             )
         }
     }

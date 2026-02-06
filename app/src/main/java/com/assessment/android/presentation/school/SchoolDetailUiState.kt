@@ -1,4 +1,4 @@
-package com.assessment.android.presentation.schooldetail
+package com.assessment.android.presentation.school
 
 import androidx.compose.runtime.Immutable
 import com.assessment.android.domain.model.SchoolDetail

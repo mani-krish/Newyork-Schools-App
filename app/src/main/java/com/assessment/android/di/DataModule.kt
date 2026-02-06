@@ -17,16 +17,16 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideSchoolService(retrofit: Retrofit): SchoolsApi =
+    fun bindSchoolApi(retrofit: Retrofit): SchoolsApi =
         retrofit.create(SchoolsApi::class.java)
 
-    @Singleton
     @Provides
-    fun provideRepository(remoteDataSource: SchoolsNetworkDataSource): SchoolsRepository =
+    @Singleton
+    fun bindSchoolRepository(remoteDataSource: SchoolsNetworkDataSource): SchoolsRepository =
         SchoolRepositoryImpl(remoteDataSource)
 
-    @Singleton
     @Provides
-    fun provideRemoteDataSource(schoolService: SchoolsApi): SchoolsNetworkDataSource =
+    @Singleton
+    fun bindSchoolDataSource(schoolService: SchoolsApi): SchoolsNetworkDataSource =
         SchoolsNetworkDataSource(schoolService)
 }

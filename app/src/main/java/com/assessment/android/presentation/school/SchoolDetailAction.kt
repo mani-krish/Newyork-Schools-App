@@ -1,4 +1,4 @@
-package com.assessment.android.presentation.schooldetail
+package com.assessment.android.presentation.school
 
 /**
  * User actions for the School Detail screen

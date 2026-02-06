@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetSchoolDetailUseCase @Inject constructor(private val schoolsRepository: SchoolsRepository) {
+class GetSchoolUseCase @Inject constructor(private val schoolsRepository: SchoolsRepository) {
     suspend operator fun invoke(dbn: String): Flow<NetworkResult<SchoolDetail>> {
-        return schoolsRepository.getSchoolDetail(dbn)
+        return schoolsRepository.getSchool(dbn)
             .map { response ->
                 when (response) {
                     is NetworkResult.Success -> {

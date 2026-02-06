@@ -10,7 +10,7 @@ class SchoolsNetworkDataSource @Inject constructor(private val schoolsApi: Schoo
         emit(NetworkResponseHandler.execute { schoolsApi.getSchools() })
     }
 
-    fun fetchSchoolDetail(dbn: String) = flow {
-        emit(NetworkResponseHandler.execute { schoolsApi.getSchoolDetail(dbn) })
+    fun fetchSchool(dbn: String) = flow {
+        emit(NetworkResponseHandler.execute { schoolsApi.getSchool(dbn) })
     }
 }

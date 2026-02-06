@@ -15,7 +15,7 @@ class SchoolRepositoryImpl @Inject constructor(private val schoolsRemoteDataSour
         return schoolsRemoteDataSource.fetchSchools()
     }
 
-    override suspend fun getSchoolDetail(dbn: String): Flow<NetworkResult<List<SchoolDetailDto>>> {
-        return schoolsRemoteDataSource.fetchSchoolDetail(dbn)
+    override suspend fun getSchool(dbn: String): Flow<NetworkResult<List<SchoolDetailDto>>> {
+        return schoolsRemoteDataSource.fetchSchool(dbn)
     }
 }

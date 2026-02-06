@@ -1,4 +1,4 @@
-package com.assessment.android.presentation.schoollist
+package com.assessment.android.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,21 +16,21 @@ import javax.inject.Inject
  * ViewModel for the School List screen handling MVI actions and UI state updates
  */
 @HiltViewModel
-class SchoolListViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val getSchoolsUseCase: GetSchoolsUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SchoolListUiState())
-    val uiState: StateFlow<SchoolListUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        onAction(SchoolListAction.LoadSchools)
+        onAction(HomeAction.LoadSchools)
     }
 
     /*Handles MVI actions from the UI layer*/
-    fun onAction(action: SchoolListAction) {
+    fun onAction(action: HomeAction) {
         when (action) {
-            SchoolListAction.LoadSchools -> loadSchools()
+            HomeAction.LoadSchools -> loadSchools()
         }
     }
 
@@ -56,7 +56,7 @@ class SchoolListViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
-                                    errorMessage = result.httpErrorMessage
+                                    errorMessage = result.message
                                 )
                             }
                         }

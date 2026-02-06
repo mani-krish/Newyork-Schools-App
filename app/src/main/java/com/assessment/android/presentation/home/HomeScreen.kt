@@ -1,19 +1,18 @@
-package com.assessment.android.presentation.schoollist
+package com.assessment.android.presentation.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.People
@@ -31,8 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -49,52 +47,70 @@ import com.assessment.android.presentation.component.LoadingState
  */
 @Composable
 fun SchoolListScreen(
-    viewModel: SchoolListViewModel = hiltViewModel(),
-    onSchoolClick: (String) -> Unit
+    modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    onSchoolClick: (String) -> Unit = {}
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val title = stringResource(R.string.schools_screen_title)
 
     Scaffold(
-        topBar = { AppToolbar(title = title) }
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            when {
-                uiState.isLoading -> LoadingState()
-                uiState.errorMessage != null -> ErrorState(stringResource(R.string.error_message))
-                uiState.schools.isNotEmpty() -> SchoolList(
-                    schools = uiState.schools,
-                    onSchoolClick = onSchoolClick
-                )
-
-                else -> EmptyState(stringResource(R.string.empty_state_message))
-            }
+        topBar = { AppToolbar(modifier = modifier, title = title) },
+        content = { innerPadding ->
+            SchoolListContent(
+                modifier = modifier.padding(innerPadding),
+                isLoading = uiState.isLoading,
+                error = uiState.errorMessage,
+                schools = uiState.schools,
+                onSchoolClick = {
+                    onSchoolClick.invoke(it)
+                }
+            )
         }
-    }
+    )
 }
 
 /**
  * Displays a scrollable list of schools.
  */
 @Composable
-private fun SchoolList(
+private fun SchoolListContent(
+    modifier: Modifier,
+    isLoading: Boolean,
+    error: String?,
     schools: List<School>,
     onSchoolClick: (String) -> Unit
 ) {
-    val listState = rememberLazyListState()
-    LazyColumn(
-        state = listState,
+    Box(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 8.dp)
+        contentAlignment = Alignment.Center,
     ) {
-        items(
-            items = schools,
-            key = { it.dbn }
-        ) { school ->
-            SchoolItem(
-                school = school,
-                onClick = { onSchoolClick(school.dbn) }
-            )
+        if (isLoading) {
+            LoadingState()
+        } else if (error != null) {
+            ErrorState(stringResource(R.string.error_message))
+        } else if (schools.isEmpty()) {
+            EmptyState(stringResource(R.string.empty_state_message))
+        } else {
+            val listState = rememberLazyListState()
+            LazyColumn(
+                state = listState,
+                modifier = modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
+            ) {
+                items(
+                    items = schools,
+                    key = { it.dbn }
+                ) { school ->
+                    SchoolItem(
+                        school = school,
+                        onClick = { onSchoolClick(school.dbn) },
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp)
+                    )
+                }
+            }
         }
     }
 }
@@ -104,16 +120,16 @@ private fun SchoolList(
  */
 @Composable
 private fun SchoolItem(
+    modifier: Modifier = Modifier,
     school: School,
     onClick: () -> Unit
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .semantics { contentDescription = school.schoolName },
-        elevation = CardDefaults.cardElevation(2.dp),
+        shape = RoundedCornerShape(16.dp),
+        modifier = modifier
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         )
@@ -122,14 +138,13 @@ private fun SchoolItem(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-
             Text(
                 text = school.schoolName,
                 style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-
             InfoRow(
                 icon = Icons.Outlined.People,
                 value = stringResource(R.string.students_label, school.totalStudents)
@@ -153,7 +168,8 @@ private fun InfoRow(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Icon(
             imageVector = icon,
@@ -161,8 +177,6 @@ private fun InfoRow(
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(20.dp)
         )
-
-        Spacer(Modifier.width(8.dp))
 
         Text(
             text = value,

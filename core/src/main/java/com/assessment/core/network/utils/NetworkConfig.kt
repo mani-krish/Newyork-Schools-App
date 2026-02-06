@@ -1,4 +1,4 @@
-package com.assessment.core.network.config
+package com.assessment.core.network.utils
 
 /**
  * Centralized network configuration constants

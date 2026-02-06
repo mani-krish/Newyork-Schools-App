@@ -11,5 +11,5 @@ interface SchoolsApi {
     suspend fun getSchools(): Response<List<SchoolDto>>
 
     @GET("resource/f9bf-2cp4.json")
-    suspend fun getSchoolDetail(@Query(value = "dbn") dbn: String): Response<List<SchoolDetailDto>>
+    suspend fun getSchool(@Query(value = "dbn") dbn: String): Response<List<SchoolDetailDto>>
 }
